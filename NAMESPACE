@@ -1,0 +1,16 @@
+S3method(predict,CRrpart)
+S3method(print,CRrpart)
+S3method(plot,CRrpart)
+
+# functions
+export(CRrpart)
+export(splits.CRrpart)
+export(print.CRrpart)
+export(predict.CRrpart)
+export(plot.CRrpart)
+import(cmprsk)
+import(gtools)
+import(casebase)
+importFrom("stats", "lm", "model.matrix")
+importFrom("graphics", "axis", "box", "legend", "mtext", "par","points")
+importFrom("stats", "pchisq")
