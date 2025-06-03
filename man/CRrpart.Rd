@@ -14,6 +14,7 @@ CRrpart(
   support = NULL,
   failcode = 1,
   cencode = 0,
+  iter = 2000,
   p.adj = FALSE
 )
 }
@@ -28,15 +29,17 @@ CRrpart(
 
 \item{n.splits}{Maximum number of splits (default =500)}
 
-\item{minbucket}{Minimum number of observations needed in each daughter node}
+\item{minbucket}{Minimum number of observations needed in each daughter node. Either minbucket or support needs to be specified. (default = NULL)}
 
-\item{support}{Percent of observations needed in each daughter node}
+\item{support}{Percent of observations needed in each daughter node. Either minbucket or support needs to be specified. (default = NULL)}
 
-\item{failcode}{Code of fstatus corresponding to the event of interest (default = 1)}
+\item{failcode}{Code of fstatus corresponding to the event of interest. (default = 1)}
 
-\item{cencode}{Code of fstatus corresponding to censored observations (default = 0)}
+\item{cencode}{Code of fstatus corresponding to censored observations. (default = 0)}
 
-\item{p.adj}{Adjust p-value for multiple testing? (default =FALSE). The adjustment is based upon the the distribution of the maximum log-likelihood statistic. It adjusts for the number of input variables, not the number of valid data splits.}
+\item{iter}{Number of iterations for p-value calculations. (default = 2000)}
+
+\item{p.adj}{Adjust p-value for multiple testing? (default = FALSE). The adjustment is based upon the the distribution of the maximum log-likelihood statistic. It adjusts based on the number of input variables, not the number of valid data splits.}
 }
 \value{
 def: Terms used to create the recursive partitions
@@ -55,7 +58,7 @@ Recursively partition a dataset with competing risks endpoint using the maximum 
 library(CRrpart)
 g=CRrpart(minbucket=NULL,support=.2,ftime=bmtcrr$ftime,fstatus=bmtcrr$Status,
 cencode=0,failcode=1,x=bmtcrr[,c('Sex','D','Phase','Age','Source')],
-n.splits=500, sig.level=0.05,p.adj=FALSE)
+n.splits=500, sig.level=0.05,iter=2000,p.adj=FALSE)
 }
 }
 \seealso{

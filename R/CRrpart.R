@@ -13,11 +13,12 @@ NULL
 #' @param fstatus Failure/censoring event variable
 #' @param sig.level Significance level (default = 0.05)
 #' @param n.splits Maximum number of splits (default =500)
-#' @param minbucket Minimum number of observations needed in each daughter node
-#' @param support Percent of observations needed in each daughter node
-#' @param failcode Code of fstatus corresponding to the event of interest (default = 1)
-#' @param cencode Code of fstatus corresponding to censored observations (default = 0)
-#' @param p.adj Adjust p-value for multiple testing? (default =FALSE). The adjustment is based upon the the distribution of the maximum log-likelihood statistic. It adjusts for the number of input variables, not the number of valid data splits.
+#' @param minbucket Minimum number of observations needed in each daughter node. Either minbucket or support needs to be specified. (default = NULL)
+#' @param support Minimum percent of observations needed in each daughter node. Either minbucket or support needs to be specified. (default = NULL)
+#' @param failcode Code of fstatus corresponding to the event of interest. (default = 1)
+#' @param cencode Code of fstatus corresponding to censored observations. (default = 0)
+#' @param iter Number of iterations for p-value calculations. (default = 2000)
+#' @param p.adj Adjust p-value for multiple testing? (default = FALSE). The adjustment is based upon the the distribution of the maximum log-likelihood statistic. It adjusts based on the number of input variables, not the number of valid data splits.
 #' @return def: Terms used to create the recursive partitions
 #' @return pvalue: pvalues for the significant terms
 #' @return call: Input function call parameters and data
@@ -28,12 +29,12 @@ NULL
 #' library(CRrpart)
 #' g=CRrpart(minbucket=NULL,support=.2,ftime=bmtcrr$ftime,fstatus=bmtcrr$Status,
 #' cencode=0,failcode=1,x=bmtcrr[,c('Sex','D','Phase','Age','Source')],
-#' n.splits=500, sig.level=0.05,p.adj=FALSE)
+#' n.splits=500, sig.level=0.05,iter=2000,p.adj=FALSE)
 #' }
 #' @export
 
 CRrpart<-function(x,ftime,fstatus,sig.level=0.05,n.splits=500,minbucket=NULL,support=NULL,
-                  failcode=1,cencode=0,p.adj=FALSE)
+                  failcode=1,cencode=0,iter=2000,p.adj=FALSE)
 {
   if(is.null(minbucket) & is.null(support)) stop('Either minbucket or support must be specified, not neither')
   if(!is.null(minbucket) & !is.null(support)) stop('Either minbucket or support must be specified, not both')
@@ -76,7 +77,7 @@ CRrpart<-function(x,ftime,fstatus,sig.level=0.05,n.splits=500,minbucket=NULL,sup
     #need at least 10 observations, with 2 failures and needing at least 5 observations per daughter node
     minnumber=ifelse(is.null(support),minbucket,ceiling(support*nrow(y)))
     if (nrow(y)<minnumber*2 | minnumber<5|nrow(y)<10 | sum(y[,2]==failcode)<=1) result$pvalue=1
-    if (nrow(y)>=minnumber*2 & minnumber>=5 & nrow(y)>=10 & sum(y[,2]==failcode)>1) result<-splits.CRrpart(x.=x,y.=y,x.var.def=x.var.def,minbuck=minnumber,failcode=failcode,cencode=cencode)
+    if (nrow(y)>=minnumber*2 & minnumber>=5 & nrow(y)>=10 & sum(y[,2]==failcode)>1) result<-splits.CRrpart(x.=x,y.=y,x.var.def=x.var.def,minbuck=minnumber,failcode=failcode,cencode=cencode,iter=iter)
 
     pvalue.out[jj,]=result$pvalue
 
@@ -92,9 +93,8 @@ CRrpart<-function(x,ftime,fstatus,sig.level=0.05,n.splits=500,minbucket=NULL,sup
 
     if (all(status=='closed')) break
   }
-
   sig.node=which(rpart.def[,1]!='')
-  if (length(sig.node)>0) ans=list('def'=rpart.def[sig.node,,drop=F],'pvalue'=pvalue.out[sig.node,],'call'=call,'class.id'=iidd)
+  if (length(sig.node)>0) ans=list('def'=rpart.def[sig.node,-4,drop=F],'pvalue'=pvalue.out[sig.node,],'call'=call,'class.id'=iidd)
   if (length(sig.node)==0) ans=list('def'="None",'pvalue'=pvalue.out[1],'call'=call,'class.id'=iidd)
   class(ans)<-"CRrpart"
   return(ans)
@@ -109,9 +109,10 @@ CRrpart<-function(x,ftime,fstatus,sig.level=0.05,n.splits=500,minbucket=NULL,sup
 #' @param minbuck Minimum number of observations needed in each daughter node
 #' @param failcode Code of fstatus corresponding to the event of interest
 #' @param cencode Code of fstatus corresponding to censored observations
+#' @param iter Number of iterations for p-value calculations. (default = 2000)
 #' @export
 
-splits.CRrpart=function(x.,y.,x.var.def,minbuck,failcode,cencode)
+splits.CRrpart=function(x.,y.,x.var.def,minbuck,failcode,cencode,iter)
 {
     best=0
     best.def=''
@@ -140,7 +141,7 @@ splits.CRrpart=function(x.,y.,x.var.def,minbuck,failcode,cencode)
                 best=2*(g$loglik-g$loglik.null)
                 if (g$coef[1]>0)
                 {
-                  best.def=paste(names(x.)[i],'>=',cut.pts[j]) #find worse split
+                  best.def=paste(names(x.)[i],'>=',cut.pts[j])
                   iidd=as.numeric(x.[,i]>=cut.pts[j])
                 }
                 if (g$coef[1]<0)
@@ -192,7 +193,7 @@ splits.CRrpart=function(x.,y.,x.var.def,minbuck,failcode,cencode)
                 best=2*(g$loglik-g$loglik.null)
                 if (g$coef[1]>0)
                 {
-                  best.def=paste(names(x.)[i],'%in%',paste(levels(x.[,i])[lst[[j]][k]],collapse=';')) #find worse split
+                  best.def=paste(names(x.)[i],'%in%',paste(levels(x.[,i])[lst[[j]][k]],collapse=';'))
                   iidd=test.var
                 }
                 if (g$coef[1]<0)
@@ -206,8 +207,20 @@ splits.CRrpart=function(x.,y.,x.var.def,minbuck,failcode,cencode)
         }
       }
     }
-    return(list(best=best,best.def=best.def,iidd=iidd,pvalue=c(1-pchisq(best,df=1),
-    1-pchisq(best,df=1)^ncol(x.))))
+
+    out=rep(NA,iter+1)
+    out[1]=best
+    for (j in 2:(iter+1))
+    {
+      m=nrow(x.)
+      n=sample(minbuck:(m-minbuck),1)
+      t.var=rep(0,m)
+      t.var[sample(m,n)]=1
+      g=crr(ftime=y.[,1],fstatus=y.[,2],cov1=t.var,failcode=1,cencode=0)
+      out[j]=2*(g$loglik-g$loglik.null)
+    }
+    return(list(best=best,best.def=best.def,iidd=iidd,pvalue=c(mean(out[1]<=out[-1]),
+    1-(1-mean(out[1]<=out[-1]))^ncol(x.))))
 }
 
 #' Print an CRrpart object
@@ -222,7 +235,7 @@ splits.CRrpart=function(x.,y.,x.var.def,minbuck,failcode,cencode)
 #' library(CRrpart)
 #' g=CRrpart(minbucket=NULL,support=.2,ftime=bmtcrr$ftime,fstatus=bmtcrr$Status,
 #' cencode=0,failcode=1,x=bmtcrr[,c('Sex','D','Phase','Age','Source')],
-#' n.splits=500, sig.level=0.05,p.adj=FALSE)
+#' n.splits=500, sig.level=0.05,iter=2000,p.adj=FALSE)
 #' }
 #' @export
 
@@ -356,7 +369,7 @@ print.CRrpart=function(x,tim=24,failcode=object$call$failcode,...)
 #' library(CRrpart)
 #' g=CRrpart(minbucket=NULL,support=.2,ftime=bmtcrr$ftime,fstatus=bmtcrr$Status,
 #' cencode=0,failcode=1,x=bmtcrr[,c('Sex','D','Phase','Age','Source')],
-#' n.splits=500,sig.level=0.05,p.adj=FALSE)
+#' n.splits=500,sig.level=0.05,iter=2000,p.adj=FALSE)
 #' predict(object=g)
 #' }
 #' @export
@@ -379,7 +392,6 @@ predict.CRrpart=function(object,newdata=NULL)
       out.tf[,i]=eval(parse(text=paste('newdata$',object$def[i,3],sep='')))
     }
   }
-
   md=matrix('',nrow(object$def),3)
   md[,1]=object$def[,1]
   for (i in 1:nrow(object$def))
@@ -412,7 +424,7 @@ predict.CRrpart=function(object,newdata=NULL)
 #' library(CRrpart)
 #' g=CRrpart(minbucket=NULL,support=.2,ftime=bmtcrr$ftime,fstatus=bmtcrr$Status,
 #' cencode=0,failcode=1,x=bmtcrr[,c('Sex','D','Phase','Age','Source')],
-#' n.splits=500,sig.level=0.05,p.adj=FALSE)
+#' n.splits=500,sig.level=0.05,iter=2000,p.adj=FALSE)
 #' plot(object=g)
 #' }
 #' @export
@@ -480,6 +492,3 @@ plot.CRrpart=function(x,failcode=1,...)
    }
    legend('topright',col=clz[1:max(a)],lty=rep(c(1),each=max(a)),legend=c(paste(levels(factor(object$class.id)),' event =',failcode)),cex=.7)
 }
-
-
-
