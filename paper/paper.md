@@ -1,20 +1,24 @@
 ---
 title: 'Recursive partitioning with hypothesis testing at each split for a competing risks endpoint'
-author:
-  - name: Greg Dyson
-    orcid: 0000-0001-9783-8464
-  - affiliation: Department of Oncology, Wayne State University, United States
- 
-date: 06 June 2025
-
-bibliography: 
-  - paper.bib
-
 tags:
   - competing risks
   - recursive partitioning
   - hypothesis testing
+authors:
+  - name: Greg Dyson
+    orcid: 0000-0001-9783-8464
+    affiliation: "1"
 
+affiliations:
+ - name: Department of Oncology, Wayne State University, United States
+   index: 1
+   
+date: 06 June 2025
+bibliography: paper.bib
+editor_options: 
+  markdown: 
+    wrap: 72
+---
 ## Summary
 
 Recursive partitioning (RP) is a statistical procedure used to classify observations into subgroups that have a consistent outcome based on features of the observations. Starting with the complete set of observations, RP will split the input dataset into two using a binary (T/F) split based on 1 feature (e.g., Age>=70; Blood Type  = "A" | "B") that is optimal according to a statistical heuristic. Each resultant subgroup is similarly split until the potential splits are exhausted and/or other stopping conditions are met. Software has been developed to perform RP with hypothesis testing at each split for continuous and categorical outcome measures. However, competing risks (CR) outcomes, which are a special type of survival (time-to-event) analysis where multiple event types are possible to be observed, have no software implementation nor hypothesis testing included. The R package CRrpart includes RP for CR outcomes (along with survival outcomes) with statistical hypothesis testing at each split.
