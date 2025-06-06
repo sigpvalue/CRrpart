@@ -7,7 +7,7 @@ author:
  
 date: 06 June 2025
 
-bibliography: paper.bib
+bibliography: paper/paper.bib
 
 tags:
   - competing risks
