@@ -31,7 +31,7 @@ CRrpart(
 
 \item{minbucket}{Minimum number of observations needed in each daughter node. Either minbucket or support needs to be specified. (default = NULL)}
 
-\item{support}{Percent of observations needed in each daughter node. Either minbucket or support needs to be specified. (default = NULL)}
+\item{support}{Minimum percent of observations in the mother node needed in each daughter node. Either minbucket or support needs to be specified. (default = NULL)}
 
 \item{failcode}{Code of fstatus corresponding to the event of interest. (default = 1)}
 

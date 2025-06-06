@@ -14,7 +14,7 @@ NULL
 #' @param sig.level Significance level (default = 0.05)
 #' @param n.splits Maximum number of splits (default =500)
 #' @param minbucket Minimum number of observations needed in each daughter node. Either minbucket or support needs to be specified. (default = NULL)
-#' @param support Minimum percent of observations needed in each daughter node. Either minbucket or support needs to be specified. (default = NULL)
+#' @param support Minimum percent of observations in the mother node needed in each daughter node. Either minbucket or support needs to be specified. (default = NULL)
 #' @param failcode Code of fstatus corresponding to the event of interest. (default = 1)
 #' @param cencode Code of fstatus corresponding to censored observations. (default = 0)
 #' @param iter Number of iterations for p-value calculations. (default = 2000)
