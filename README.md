@@ -12,7 +12,8 @@ An example:
 
 ```
 library(CRrpart)
-g=CRrpart(minbucket=NULL,support=.2,ftime=bmtcrr$ftime,fstatus=bmtcrr$Status, cencode=0,failcode=1,x=bmtcrr[,c('Sex','D','Phase','Age','Source')], n.splits=500, sig.level=0.05,iter=2000,p.adj=FALSE)
+g=CRrpart(minbucket=NULL,support=.2,ftime=bmtcrr$ftime,fstatus=bmtcrr$Status, cencode=0,failcode=1,
+x=bmtcrr[,c('Sex','D','Phase','Age','Source')], n.splits=500, sig.level=0.05,iter=2000,p.adj=FALSE)
 print(g)
 plot(g)
 ```
