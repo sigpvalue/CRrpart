@@ -41,4 +41,4 @@ Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2022). casebase: An Altern
 
 Fine J, Gray RJ (1999). A Proportional Hazards Model for the Subdistribution of a Competing Risk. Journal of the American Statistical Association, 94(446), 496–509.
 
-Gray RJ (2024). cmprsk: Subdistribution Analysis of Competing Risks. R package version 2.2-12. https://CRAN.R-project.org/package=cmprsk
+Gray RJ (2024). _cmprsk: Subdistribution Analysis of Competing Risks_. R package version 2.2-12, <https://CRAN.R-project.org/package=cmprsk>.
