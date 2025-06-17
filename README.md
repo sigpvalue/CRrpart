@@ -13,7 +13,7 @@ It can be installed using:
 library(remotes)
 install_github("sigpvalue/CRrpart")
 ```
-The CRrpart package uses the CR implementation from Fine and Gray [@FINE1999] through the cmprsk R package [@GRAY2024]. The main function for performing the analysis for the package is `CRrpart`, with `plot`, `predict`, and `print` routines also included (see example below using a transplant (bmtcrr) dataset from the casebase package [@BHATNAGAR2022]). The naming conventions for CR response inputs (e.g., ftime, fstatus, cencode, failcode) established by the cmprsk package are followed for this package to ease integration. There are no methods to account for missing data for `CRrpart`, so only observations with complete data can be analzyed. The additional user inputted parameters for `CRrpart` include
+The CRrpart package uses the CR implementation from Fine and Gray (Fine and Gray, 1999) through the cmprsk R package (Gray, 2024). The main function for performing the analysis for the package is `CRrpart`, with `plot`, `predict`, and `print` routines also included (see example below using a transplant (bmtcrr) dataset from the casebase package (Bhatnagar, 2022). The naming conventions for CR response inputs (e.g., ftime, fstatus, cencode, failcode) established by the cmprsk package are followed for this package to ease integration. There are no methods to account for missing data for `CRrpart`, so only observations with complete data can be analzyed. The additional user inputted parameters for `CRrpart` include
 
 - <u>n.splits</u> Maximum number of splits
 - <u>minbucket</u> Minimum number of observations needed in each daughter node. Either minbucket or support needs to be specified.
@@ -22,7 +22,7 @@ The CRrpart package uses the CR implementation from Fine and Gray [@FINE1999] th
 - <u>iter</u> Number of iterations for the p-value calculation
 - <u>p.adj</u> Adjust p-value for multiple testing?
 
-Note that as the `crr` function in the cmprsk package [@GRAY2024] can analyze standard survival models (only 1 event type), `CRrpart` also will work for typical survival endpoints.
+Note that as the `crr` function in the cmprsk package (Gray, 2024) can analyze standard survival models (only 1 event type), `CRrpart` also will work for typical survival endpoints.
 
 An example:
 
@@ -37,3 +37,8 @@ plot(g)
 
 ## Citations
 
+Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2022). casebase: An Alternative Framework for Survival Analysis and Comparison of Event Rates. The R Journal, 14(3).
+
+Fine J, Gray RJ (1999). A Proportional Hazards Model for the Subdistribution of a Competing Risk. Journal of the American Statistical Association, 94(446), 496–509.
+
+Gray RJ (2024). cmprsk: Subdistribution Analysis of Competing Risks. R package version 2.2-12. https://CRAN.R-project.org/package=cmprsk
