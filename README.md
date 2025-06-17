@@ -15,12 +15,12 @@ install_github("sigpvalue/CRrpart")
 ```
 The CRrpart package uses the CR implementation from Fine and Gray (Fine and Gray, 1999) through the cmprsk R package (Gray, 2024). The main function for performing the analysis for the package is `CRrpart`, with `plot`, `predict`, and `print` routines also included (see example below using a transplant (bmtcrr) dataset from the casebase package (Bhatnagar, 2022). The naming conventions for CR response inputs (e.g., ftime, fstatus, cencode, failcode) established by the cmprsk package are followed for this package to ease integration. There are no methods to account for missing data for `CRrpart`, so only observations with complete data can be analzyed. The additional user inputted parameters for `CRrpart` include
 
-- <u>n.splits</u> Maximum number of splits
-- <u>minbucket</u> Minimum number of observations needed in each daughter node. Either minbucket or support needs to be specified.
-- <u>support</u> Minimum percent of observations in the mother node needed in each daughter node. Either minbucket or support needs to be specified.
-- <u>sig.level</u> Significance level 
-- <u>iter</u> Number of iterations for the p-value calculation
-- <u>p.adj</u> Adjust p-value for multiple testing?
+- n.splits: Maximum number of splits
+- minbucket: Minimum number of observations needed in each daughter node. Either minbucket or support needs to be specified.
+- support: Minimum percent of observations in the mother node needed in each daughter node. Either minbucket or support needs to be specified.
+- sig.level: Significance level 
+- iter: Number of iterations for the p-value calculation
+- p.adj: Adjust p-value for multiple testing?
 
 Note that as the `crr` function in the cmprsk package (Gray, 2024) can analyze standard survival models (only 1 event type), `CRrpart` also will work for typical survival endpoints.
 
